@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSLAndriodTest - Android 虚拟定位</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1117;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .hero {
+            background: linear-gradient(135deg, #1a1c2e 0%, #0f1117 100%);
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 1px solid #2a2d3e;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #4fc3f7, #81c784);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: #a0a0b0;
+            margin-bottom: 32px;
+        }
+        .hero .badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .badge-kotlin { background: #7f52ff22; color: #7f52ff; border: 1px solid #7f52ff55; }
+        .badge-compose { background: #4285f422; color: #4285f4; border: 1px solid #4285f455; }
+        .badge-baidu { background: #2932e122; color: #2932e1; border: 1px solid #2932e155; }
+        .badge-gps { background: #4caf5022; color: #4caf50; border: 1px solid #4caf5055; }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 60px 20px; }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 32px;
+            color: #fff;
+            border-left: 4px solid #4fc3f7;
+            padding-left: 16px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .feature-card {
+            background: #1a1c2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .feature-card:hover { transform: translateY(-4px); border-color: #4fc3f7; }
+        .feature-card .icon { font-size: 2rem; margin-bottom: 12px; }
+        .feature-card h3 { color: #4fc3f7; margin-bottom: 8px; font-size: 1.15rem; }
+        .feature-card p { color: #a0a0b0; font-size: 0.95rem; }
+
+        .arch {
+            background: #1a1c2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 12px;
+            padding: 32px;
+            margin-top: 20px;
+        }
+        .arch pre {
+            color: #81c784;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .steps {
+            counter-reset: step;
+        }
+        .step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #4fc3f7;
+            color: #0f1117;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .step .content h4 { color: #e0e0e0; margin-bottom: 4px; }
+        .step .content p { color: #a0a0b0; font-size: 0.95rem; }
+
+        .download {
+            text-align: center;
+            padding: 60px 20px;
+            background: #1a1c2e;
+            border-top: 1px solid #2a2d3e;
+            border-bottom: 1px solid #2a2d3e;
+        }
+        .download h2 { font-size: 2rem; color: #fff; margin-bottom: 16px; }
+        .download p { color: #a0a0b0; margin-bottom: 32px; }
+        .btn-download {
+            display: inline-block;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            color: #0f1117;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px #4fc3f744;
+        }
+        .btn-github {
+            display: inline-block;
+            padding: 12px 32px;
+            background: transparent;
+            color: #e0e0e0;
+            text-decoration: none;
+            border: 1px solid #4a4d5e;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-left: 12px;
+            transition: border-color 0.2s;
+        }
+        .btn-github:hover { border-color: #4fc3f7; }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .tech-item {
+            padding: 8px 16px;
+            background: #1a1c2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #a0a0b0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #555;
+            font-size: 0.85rem;
+        }
+        footer a { color: #4fc3f7; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>SSLAndriodTest</h1>
+    <p class="tagline">Android 虚拟定位应用 · 百度地图 + FusedLocation Mock</p>
+    <div class="badges">
+        <span class="badge badge-kotlin">Kotlin</span>
+        <span class="badge badge-compose">Jetpack Compose</span>
+        <span class="badge badge-baidu">百度地图 SDK 7.6.4</span>
+        <span class="badge badge-gps">FusedLocation Mock</span>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="section-title">核心功能</h2>
+    <div class="features">
+        <div class="feature-card">
+            <div class="icon">🗺️</div>
+            <h3>百度地图选点</h3>
+            <p>集成百度地图 SDK，支持拖动选点、POI 城市搜索、地点收藏管理，默认预置苏州坐标。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">📍</div>
+            <h3>三 Provider 注入</h3>
+            <p>同时 Mock GPS、Network、Fused 三个 Provider，覆盖所有定位路径，确保第三方 App 读到模拟位置。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🔧</div>
+            <h3>Fused Mock 模式</h3>
+            <p>通过 FusedLocationProviderClient.setMockMode(true) 直接注入融合定位，解决高德地图等 App 绕过 GPS Mock 的问题。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🛡️</div>
+            <h3>Mock 标记清除</h3>
+            <p>反射调用 setIsFromMockProvider(false)、setMock(false)，清除 mIsFromMockProvider 私有字段，绕过 App 的 Mock 检测。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">⏱️</div>
+            <h3>前台服务定时推送</h3>
+            <p>ForegroundService 每 300ms 调用 tick() 重新注入坐标，App 切后台不中断，启动时 burst 5 次确保立即生效。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🔄</div>
+            <h3>完整坐标转换</h3>
+            <p>WGS-84 ↔ GCJ-02 ↔ BD-09 四步转换算法，确保百度地图显示与系统 GPS 注入坐标准确对应。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🔒</div>
+            <h3>强制权限检查</h3>
+            <p>启动时通过 AppOpsManager 检查模拟位置权限，未设置时弹出不可关闭弹窗引导用户配置。</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">📡</div>
+            <h3>真实定位兜底</h3>
+            <p>停止模拟后点击定位按钮，跳过 lastLocation 缓存强制请求新 GPS 位置，3 秒超时保护。</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="section-title">技术架构</h2>
+    <div class="arch">
+<pre>┌─────────────────────────────────────────────┐
+│              MainActivity (Compose UI)        │
+│   ┌──────────┐  ┌──────────┐  ┌───────────┐  │
+│   │ 百度地图  │  │ 搜索/收藏 │  │ 底部控制栏 │  │
+│   └────┬─────┘  └──────────┘  └─────┬─────┘  │
+│        │                           │         │
+│        ▼                           ▼         │
+│  ┌───────────────────────────────────────┐   │
+│  │        MockLocationService             │   │
+│  │   (ForegroundService, 300ms tick)      │   │
+│  │         ┌─────────────────┐            │   │
+│  │         │ MockLocationProvider│         │   │
+│  │         └───────┬─────────┘            │   │
+│  │     ┌───────────┼───────────┐          │   │
+│  │     ▼           ▼           ▼          │   │
+│  │  GPS Provider  Network   Fused Provider │   │
+│  │  (TestProvider) (TestProvider) (setMockMode) │
+│  └───────────────────────────────────────┘   │
+│         │ LocationSanitizer (反射清除Mock标记) │
+└─────────────────────────────────────────────┘</pre>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="section-title">使用步骤</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="content">
+                <h4>安装应用</h4>
+                <p>下载并安装 SSLAndriodTest APK 到 Android 设备（minSdk 30）。</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="content">
+                <h4>开启开发者选项</h4>
+                <p>设置 → 关于手机 → 连续点击 MIUI 版本/版本号 7 次开启开发者选项。</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="content">
+                <h4>设置模拟位置应用</h4>
+                <p>开发者选项 → 选择模拟位置信息应用 → 选择「SSLAndriodTest」。应用启动时会强制提示此步骤。</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="content">
+                <h4>选择目标位置</h4>
+                <p>拖动地图将图钉对准目标位置，或使用搜索/收藏功能快速跳转。</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="content">
+                <h4>开始模拟定位</h4>
+                <p>点击「开始模拟定位」按钮，系统将通过 GPS + Network + Fused 三个 Provider 注入模拟坐标。</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="content">
+                <h4>验证效果</h4>
+                <p>打开高德地图、智租换电等第三方 App，确认位置已变更为模拟位置。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="section-title">技术栈</h2>
+    <div class="tech-stack">
+        <span class="tech-item">Kotlin 2.2.10</span>
+        <span class="tech-item">Jetpack Compose (BOM 2026.02)</span>
+        <span class="tech-item">Android Gradle 9.2.1</span>
+        <span class="tech-item">compileSdk 37 / minSdk 30</span>
+        <span class="tech-item">百度地图 SDK 7.6.4</span>
+        <span class="tech-item">Google Play Services Location 21.3.0</span>
+        <span class="tech-item">FusedLocationProviderClient</span>
+        <span class="tech-item">ForegroundService (location)</span>
+        <span class="tech-item">AppOpsManager</span>
+        <span class="tech-item">SharedPreferences</span>
+    </div>
+</div>
+
+<div class="download">
+    <h2>下载应用</h2>
+    <p>Android 11+ (minSdk 30) · 约 60MB · Release 签名包</p>
+    <a href="https://github.com/ShiShanLing/SSLAndriodTest/releases" class="btn-download">下载 APK</a>
+    <a href="https://github.com/ShiShanLing/SSLAndriodTest" class="btn-github">查看源码</a>
+</div>
+
+<footer>
+    <p>SSLAndriodTest · <a href="https://github.com/ShiShanLing/SSLAndriodTest">GitHub</a> · MIT License</p>
+</footer>
+
+</body>
+</html>
